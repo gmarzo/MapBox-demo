@@ -8,7 +8,9 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
 
-import Map from 'react-map-gl'
+import RoomIcon from '@material-ui/icons/Room'
+
+import { Map, Marker } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
 import { getMap, ACCESS_TOKEN } from '../api'
@@ -116,10 +118,18 @@ const Homepage = props => {
                   latitude: location.geometry.coordinates[1],
                   zoom: 14,
                 }}
-                style={{ width: '100%', height: 300 }}
+                style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '20rem' }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 mapboxAccessToken={ACCESS_TOKEN}
-              />
+              >
+                <Marker
+                  latitude={location.geometry.coordinates[1]}
+                  longitude={location.geometry.coordinates[0]}
+                  anchor="center"
+                >
+                  {/* <RoomIcon /> */}
+                </Marker>
+              </Map>
             </div>
           )}
         </div>
