@@ -9,8 +9,12 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
 
 import Map from 'react-map-gl'
+import mapboxgl from 'mapbox-gl'
 
 import { getMap, ACCESS_TOKEN } from '../api'
+
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
 
 const useStyles = makeStyles(
   theme => ({
