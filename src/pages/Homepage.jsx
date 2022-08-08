@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
+import { Helmet, HelmetProvider } from 'react-helmet-async'
+
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
@@ -17,6 +19,7 @@ const useStyles = makeStyles(
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '100vh',
     },
 
@@ -27,10 +30,15 @@ const useStyles = makeStyles(
       minHeight: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+      marginTop: theme.spacing(1),
     },
 
     textField: {
       minWidth: '80%',
+    },
+
+    newMapButton: {
+      width: '80%',
     },
   }),
   { name: 'Homepage' }
@@ -70,37 +78,48 @@ const Homepage = props => {
 
   return (
     <div className={classes.root}>
-      <TextField
-        variant="outlined"
-        className={classes.textField}
-        label="Address"
-        value={query}
-        onChange={handleFieldChange}
-      />
-      <Button variant="contained" color="primary" onClick={() => newMap()}>
-        New address
-      </Button>
-      <div>{location !== '' ? <p>You are here...</p> : <></>}</div>
-      <div>{location.place_name}</div>
-      <div>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <div className={classes.locationContainer}>
-            ({location.geometry.coordinates[0]}, {location.geometry.coordinates[1]})
-            <Map
-              initialViewState={{
-                longitude: location.geometry.coordinates[0],
-                latitude: location.geometry.coordinates[1],
-                zoom: 14,
-              }}
-              style={{ width: 350, height: 300 }}
-              mapStyle="mapbox://styles/mapbox/streets-v9"
-              mapboxAccessToken={ACCESS_TOKEN}
-            />
-          </div>
-        )}
-      </div>
+      <HelmetProvider>
+        <Helmet>
+          <title>Mapbox | Homepage</title>
+        </Helmet>
+
+        <TextField
+          variant="outlined"
+          className={classes.textField}
+          label="Address"
+          value={query}
+          onChange={handleFieldChange}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => newMap()}
+          className={classes.newMapButton}
+        >
+          New address
+        </Button>
+        <div>{location !== '' ? <p>You are here...</p> : <></>}</div>
+        <div>{location.place_name}</div>
+        <div>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <div className={classes.locationContainer}>
+              ({location.geometry.coordinates[0]}, {location.geometry.coordinates[1]})
+              <Map
+                initialViewState={{
+                  longitude: location.geometry.coordinates[0],
+                  latitude: location.geometry.coordinates[1],
+                  zoom: 14,
+                }}
+                style={{ width: '100%', height: 300 }}
+                mapStyle="mapbox://styles/mapbox/streets-v9"
+                mapboxAccessToken={ACCESS_TOKEN}
+              />
+            </div>
+          )}
+        </div>
+      </HelmetProvider>
     </div>
   )
 }
