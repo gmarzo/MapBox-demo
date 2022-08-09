@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField'
 
 import RoomIcon from '@material-ui/icons/Room'
 
-import { Map, Marker } from 'react-map-gl'
+import { Map, Marker, FullscreenControl } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
 import { getMap, ACCESS_TOKEN } from '../api'
@@ -27,6 +27,7 @@ const useStyles = makeStyles(
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
+      minWidth: '100vw',
     },
 
     locationContainer: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles(
       flex: 1,
       flexDirection: 'column',
       minHeight: '100%',
+      minWidth: '100%',
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: theme.spacing(1),
@@ -118,14 +120,21 @@ const Homepage = props => {
                   latitude: location.geometry.coordinates[1],
                   zoom: 14,
                 }}
-                style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '20rem' }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flex: 1,
+                  minHeight: '20rem',
+                  minWidth: '80%',
+                }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 mapboxAccessToken={ACCESS_TOKEN}
               >
                 <Marker
                   latitude={location.geometry.coordinates[1]}
                   longitude={location.geometry.coordinates[0]}
-                  anchor="center"
+                  pitchAlignment="map"
+                  anchor="bottom"
                 >
                   {/* <RoomIcon /> */}
                 </Marker>
