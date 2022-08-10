@@ -1,23 +1,18 @@
-import { useEffect, useState, useReducer } from 'react'
+import { useEffect, useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-
-import ByAddress from './ByAddress'
-import ByPOI from './ByPOI'
 
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 
-import RoomIcon from '@material-ui/icons/Room'
-
-import { Map, Marker, FullscreenControl } from 'react-map-gl'
+import { Map, Marker } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
-import { getMap, ACCESS_TOKEN } from '../api'
+import { getMapByAddress, ACCESS_TOKEN } from '../api'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
@@ -73,59 +68,46 @@ const useStyles = makeStyles(
   { name: 'Homepage' }
 )
 
-const PAGE_ACTIONS = {
-  SET_PAGE: 'set-page',
-}
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case PAGE_ACTIONS.SET_PAGE:
-      return { ...state, ...action.payload }
-  }
-}
-
-const initialState = {
-  page: '',
-}
-const contentMapping = {
-  address: ByAddress,
-  poi: ByPOI,
-}
-
-const Homepage = props => {
+const ByAddress = props => {
   const classes = useStyles(props)
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [location, setLocation] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
 
-  const Content = contentMapping[state.page]
+  useEffect(() => {
+    const getStuff = async () => {
+      const map = await getMapByAddress(query)
+      console.log(JSON.stringify(map, null, 2))
+      setLocation(map.features[0])
+      setLoading(false)
+    }
+    getStuff()
+  }, [])
+
+  const newMap = () => {
+    const getNewMap = async () => {
+      setLoading(true)
+      const map = await getMapByAddress(query)
+      setLocation(map.features[0])
+      setLoading(false)
+    }
+    getNewMap()
+  }
+
+  const handleFieldChange = event => {
+    const request = event.target.value
+    setQuery(request)
+  }
+
   return (
     <div className={classes.root}>
       <HelmetProvider>
         <Helmet>
           <title>Mapbox | Homepage</title>
         </Helmet>
-        {Content ? (
-          <Content mapDispatch={dispatch} mapState={state} />
-        ) : (
-          <>
-            <Button
-              variant="contained"
-              onClick={() =>
-                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
-              }
-            >
-              To address search
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'poi' } })}
-            >
-              To POI search
-            </Button>
-          </>
-        )}
 
-        {/* <Paper square elevation={3} className={classes.mapContainer}>
+        <Paper square elevation={3} className={classes.mapContainer}>
           <TextField
             variant="filled"
             className={classes.textField}
@@ -142,7 +124,7 @@ const Homepage = props => {
             New address
           </Button>
           {/* <div>{location !== '' ? <p>You are here...</p> : <></>}</div> */}
-        {/* <div>{location.place_name}</div>
+          <div>{location.place_name}</div>
           <div>
             {loading ? (
               <CircularProgress />
@@ -177,10 +159,10 @@ const Homepage = props => {
               </div>
             )}
           </div>
-        </Paper> */}
+        </Paper>
       </HelmetProvider>
     </div>
   )
 }
 
-export default Homepage
+export default ByAddress

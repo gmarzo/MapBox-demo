@@ -3,7 +3,7 @@ const ACCESS_TOKEN =
 
 const defaultAddress = '1%20lmu%20drive'
 
-const getMap = async address => {
+const getMapByAddress = async address => {
   const formattedAddress = address.split(' ').join('%20')
   const response = await fetch(
     `https://api.mapbox.com/geocoding/v5/mapbox.places/${
@@ -13,4 +13,4 @@ const getMap = async address => {
   return response.json()
 }
 
-export { getMap, ACCESS_TOKEN }
+export { getMapByAddress, ACCESS_TOKEN }
