@@ -13,6 +13,7 @@ import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
 import InputLabel from '@material-ui/core/InputLabel'
 import Paper from '@material-ui/core/Paper'
+import Popover from '@material-ui/core/Popover'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -21,7 +22,7 @@ import NativeSelect from '@material-ui/core/NativeSelect'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import RoomIcon from '@material-ui/icons/Room'
 
-import { Map, Marker } from 'react-map-gl'
+import { Map, Marker, Popup } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
 import CATEGORIES from '../common/categories'
@@ -117,10 +118,10 @@ const useStyles = makeStyles(
       marginTop: theme.spacing(2),
     },
 
-    markerColor: {
+    marker: {
       fill: 'red',
-      height: 25,
-      width: 25,
+      height: 35,
+      width: 35,
     },
 
     blackText: {
@@ -140,6 +141,9 @@ const ByPOI = props => {
   const [address, setAddress] = useState('')
   const [pois, setPois] = useState(null)
   const [addressCoords, setAddressCoords] = useState(null)
+  const [popupPoint, setPopupPoint] = useState(null)
+  const [popupOpen, setPopupOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
 
   const getPOIs = () => {
     const getPoints = async () => {
@@ -148,20 +152,11 @@ const ByPOI = props => {
       console.log('POIs: ', data.features)
       setPois(data.features)
       const coords = await getMapByAddress(address)
-      console.log('Address coords: ', coords.features)
       setAddressCoords(coords.features)
       setLoading(false)
     }
 
-    // const getMapCenter = async () => {
-    //   const coords = await getMapByAddress(address)
-    //   console.log('Address coords: ', coords.features)
-    //   setAddressCoords(coords.features)
-    //   setLoading(false)
-    // }
-
     getPoints()
-    // getMapCenter()
   }
 
   const handleChange = event => {
@@ -174,6 +169,17 @@ const ByPOI = props => {
         break
       default:
     }
+  }
+
+  const selectMarker = event => {
+    console.log('Made it to function')
+    //setAnchorEl(event.target)
+    setPopupOpen(true)
+    //console.log(anchorEl)
+  }
+
+  const handleClose = () => {
+    setPopupOpen(false)
   }
 
   return (
@@ -258,10 +264,33 @@ const ByPOI = props => {
             >
               {pois.map((point, index) => {
                 return (
-                  <Marker key={index} latitude={point.center[1]} longitude={point.center[0]}>
-                    <div>{point.text}</div>
-                    <RoomIcon className={classes.markerColor} />
-                  </Marker>
+                  <div key={point.id}>
+                    <Marker
+                      key={index}
+                      latitude={point.center[1]}
+                      longitude={point.center[0]}
+                      //onClick={() => setPopupOpen({ ...popupOpen, popupOpen[point._id]: true })}
+                      onClick={e => {
+                        e.originalEvent.stopPropagation()
+                        setPopupPoint(point)
+                        setPopupOpen(true)
+                      }}
+                    >
+                      <RoomIcon className={classes.marker} />
+                    </Marker>
+                    {popupOpen && (
+                      <Popup
+                        key={`popup-${index}`}
+                        longitude={popupPoint.center[0]}
+                        latitude={popupPoint.center[1]}
+                        anchor="bottom"
+                        onClose={() => setPopupOpen(false)}
+                      >
+                        <Typography>{popupPoint.text}</Typography>
+                        <Typography>{popupPoint.properties.address}</Typography>
+                      </Popup>
+                    )}
+                  </div>
                 )
               })}
             </Map>

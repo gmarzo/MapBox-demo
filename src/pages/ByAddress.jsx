@@ -10,6 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+
 import { Map, Marker } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
@@ -32,15 +34,24 @@ const useStyles = makeStyles(
         'linear-gradient(32deg, rgba(78,67,255,1) 0%, rgba(128,128,255,1) 24%, rgba(0,212,255,1) 100%)',
     },
 
+    searchContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '80vh',
+      width: '80vw',
+      backgroundColor: '#e1e0d6',
+    },
+
     locationContainer: {
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
-      minHeight: '100%',
-      minWidth: '100%',
-      justifyContent: 'center',
+      height: '80vh',
+      width: '80vw',
+      justifyContent: 'flex-start',
       alignItems: 'center',
-      marginTop: theme.spacing(1),
     },
 
     textField: {
@@ -61,9 +72,35 @@ const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      minWidth: '75vw',
-      minHeight: '80vh',
-      backgroundColor: '#d6d6d6',
+      minWidth: '80%',
+      minHeight: '80%',
+    },
+
+    fieldContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      flex: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '100%',
+    },
+
+    resultContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '100%',
+      height: '60%',
+    },
+
+    header: {
+      display: 'flex',
+      flex: 0,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      minWidth: '100%',
     },
   }),
   { name: 'Homepage' }
@@ -75,6 +112,8 @@ const ByAddress = props => {
   const [location, setLocation] = useState('')
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
+
+  const { mapDispatch, mapState, PAGE_ACTIONS } = props
 
   useEffect(() => {
     const getStuff = async () => {
@@ -108,24 +147,37 @@ const ByAddress = props => {
           <title>Mapbox | Homepage</title>
         </Helmet>
 
-        <Paper square elevation={3} className={classes.mapContainer}>
-          <TextField
-            variant="filled"
-            className={classes.textField}
-            label="Address"
-            value={query}
-            onChange={handleFieldChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => newMap()}
-            className={classes.newMapButton}
-          >
-            New address
-          </Button>
-          {/* <div>{location !== '' ? <p>You are here...</p> : <></>}</div> */}
-          <div>
+        <Paper square elevation={3} className={classes.searchContainer}>
+          <div className={classes.header}>
+            <IconButton
+              onClick={() =>
+                mapDispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'home' } })
+              }
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </div>
+
+          <div className={classes.fieldContainer}>
+            <TextField
+              variant="filled"
+              className={classes.textField}
+              label="Address"
+              value={query}
+              onChange={handleFieldChange}
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => newMap()}
+              className={classes.newMapButton}
+            >
+              New address
+            </Button>
+          </div>
+
+          <div className={classes.resultContainer}>
             {loading ? (
               <CircularProgress />
             ) : (
@@ -134,31 +186,32 @@ const ByAddress = props => {
                 <div>
                   ({location.geometry.coordinates[0]}, {location.geometry.coordinates[1]})
                 </div>
-                <Map
-                  initialViewState={{
-                    longitude: location.geometry.coordinates[0],
-                    latitude: location.geometry.coordinates[1],
-                    zoom: 14,
-                  }}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flex: 1,
-                    minHeight: '60vh',
-                    width: '50vw',
-                    marginTop: '1vh',
-                    marginBottom: '2vh',
-                  }}
-                  mapStyle="mapbox://styles/mapbox/streets-v9"
-                  mapboxAccessToken={ACCESS_TOKEN}
-                >
-                  <Marker
-                    latitude={location.geometry.coordinates[1]}
-                    longitude={location.geometry.coordinates[0]}
-                    pitchAlignment="map"
-                    anchor="bottom"
-                  />
-                </Map>
+                <div className={classes.mapContainer}>
+                  <Map
+                    initialViewState={{
+                      longitude: location.geometry.coordinates[0],
+                      latitude: location.geometry.coordinates[1],
+                      zoom: 14,
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      height: '100%',
+                      width: '75%',
+                      marginTop: '30px',
+                      marginBottom: '30px',
+                    }}
+                    mapStyle="mapbox://styles/mapbox/streets-v9"
+                    mapboxAccessToken={ACCESS_TOKEN}
+                  >
+                    <Marker
+                      latitude={location.geometry.coordinates[1]}
+                      longitude={location.geometry.coordinates[0]}
+                      pitchAlignment="map"
+                      anchor="bottom"
+                    />
+                  </Map>
+                </div>
               </div>
             )}
           </div>

@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
 import HomeIcon from '@material-ui/icons/Home'
+import MapIcon from '@material-ui/icons/Map'
 import RoomIcon from '@material-ui/icons/Room'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -72,7 +73,7 @@ const useStyles = makeStyles(
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       minWidth: '75vw',
       minHeight: '80vh',
@@ -81,6 +82,13 @@ const useStyles = makeStyles(
     title: {
       fontFamily: 'Open Sans',
       fontWeight: 'bold',
+    },
+
+    logo: {
+      display: 'flex',
+      flex: 0,
+      height: '30vh',
+      width: '30vw',
     },
 
     //Buttons
@@ -151,7 +159,7 @@ const Homepage = props => {
             <Typography variant="h2" className={classes.title}>
               Mapbox-Demo
             </Typography>
-
+            <MapIcon className={classes.logo} />
             <div className={classes.buttonContainer}>
               <IconButton
                 onClick={() =>
