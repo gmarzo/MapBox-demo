@@ -1,3 +1,5 @@
+// Mapbox API forward geocoding: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding
+
 import { useEffect, useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'

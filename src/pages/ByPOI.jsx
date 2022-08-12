@@ -1,22 +1,15 @@
 // Mapbox API forward geocoding: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding
 // Mapbox API point of interest geocoding: https://docs.mapbox.com/api/search/geocoding/#point-of-interest-category-coverage
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
-import clsx from 'clsx'
-
 import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
-import InputLabel from '@material-ui/core/InputLabel'
 import Paper from '@material-ui/core/Paper'
-import Popover from '@material-ui/core/Popover'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import MenuItem from '@material-ui/core/MenuItem'
 import NativeSelect from '@material-ui/core/NativeSelect'
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
