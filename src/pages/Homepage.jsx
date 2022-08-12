@@ -9,10 +9,14 @@ import ByPOI from './ByPOI'
 
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
 
+import HomeIcon from '@material-ui/icons/Home'
 import RoomIcon from '@material-ui/icons/Room'
+import SearchIcon from '@material-ui/icons/Search'
 
 import { Map, Marker, FullscreenControl } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
@@ -38,13 +42,13 @@ const useStyles = makeStyles(
 
     locationContainer: {
       display: 'flex',
-      flex: 1,
       flexDirection: 'column',
-      minHeight: '100%',
-      minWidth: '100%',
+      minHeight: '80vh',
+      minWidth: '75vw',
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: theme.spacing(1),
+      backgroundColor: '#e1e0d6',
     },
 
     textField: {
@@ -55,12 +59,6 @@ const useStyles = makeStyles(
       border: '2px solid #000000',
     },
 
-    newMapButton: {
-      width: '50%',
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-
     mapContainer: {
       display: 'flex',
       flexDirection: 'column',
@@ -68,6 +66,47 @@ const useStyles = makeStyles(
       minWidth: '75vw',
       minHeight: '80vh',
       backgroundColor: '#d6d6d6',
+    },
+
+    buttonContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '75vw',
+      minHeight: '80vh',
+    },
+
+    title: {
+      fontFamily: 'Open Sans',
+      fontWeight: 'bold',
+    },
+
+    //Buttons
+
+    pageButton: {
+      fontFamily: 'Open sans',
+      margin: theme.spacing(0.3),
+      color: '#000000',
+    },
+
+    buttonPaper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '60vw',
+    },
+
+    buttonIcon: {
+      width: 45,
+      height: 45,
+      marginLeft: theme.spacing(1),
+    },
+
+    buttonText: {
+      marginLeft: theme.spacing(1),
     },
   }),
   { name: 'Homepage' }
@@ -104,80 +143,44 @@ const Homepage = props => {
         <Helmet>
           <title>Mapbox | Homepage</title>
         </Helmet>
-        {Content ? (
-          <Content mapDispatch={dispatch} mapState={state} />
-        ) : (
-          <>
-            <Button
-              variant="contained"
-              onClick={() =>
-                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
-              }
-            >
-              To address search
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'poi' } })}
-            >
-              To POI search
-            </Button>
-          </>
-        )}
 
-        {/* <Paper square elevation={3} className={classes.mapContainer}>
-          <TextField
-            variant="filled"
-            className={classes.textField}
-            label="Address"
-            value={query}
-            onChange={handleFieldChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => newMap()}
-            className={classes.newMapButton}
-          >
-            New address
-          </Button>
-          {/* <div>{location !== '' ? <p>You are here...</p> : <></>}</div> */}
-        {/* <div>{location.place_name}</div>
-          <div>
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <div className={classes.locationContainer}>
-                ({location.geometry.coordinates[0]}, {location.geometry.coordinates[1]})
-                <Map
-                  initialViewState={{
-                    longitude: location.geometry.coordinates[0],
-                    latitude: location.geometry.coordinates[1],
-                    zoom: 14,
-                  }}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flex: 1,
-                    minHeight: '60vh',
-                    width: '50vw',
-                    marginTop: '1vh',
-                    marginBottom: '2vh',
-                  }}
-                  mapStyle="mapbox://styles/mapbox/streets-v9"
-                  mapboxAccessToken={ACCESS_TOKEN}
-                >
-                  <Marker
-                    latitude={location.geometry.coordinates[1]}
-                    longitude={location.geometry.coordinates[0]}
-                    pitchAlignment="map"
-                    anchor="bottom"
-                  />
-                </Map>
-              </div>
-            )}
-          </div>
-        </Paper> */}
+        {Content ? (
+          <Content mapDispatch={dispatch} mapState={state} PAGE_ACTIONS={PAGE_ACTIONS} />
+        ) : (
+          <Paper square elevation={3} className={classes.locationContainer}>
+            <Typography variant="h2" className={classes.title}>
+              Mapbox-Demo
+            </Typography>
+
+            <div className={classes.buttonContainer}>
+              <IconButton
+                onClick={() =>
+                  dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
+                }
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Search by Address
+                  </Typography>
+                  <HomeIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+
+              <IconButton
+                onClick={() => dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'poi' } })}
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Search by Point of Interest
+                  </Typography>
+                  <SearchIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+            </div>
+          </Paper>
+        )}
       </HelmetProvider>
     </div>
   )
