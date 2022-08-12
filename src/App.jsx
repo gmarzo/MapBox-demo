@@ -1,5 +1,4 @@
-import logo from './logo.svg'
-import Button from '@material-ui/core/Button'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import './App.css'
 import Homepage from './pages/Homepage'
 

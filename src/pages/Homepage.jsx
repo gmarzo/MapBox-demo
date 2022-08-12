@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import TextField from '@material-ui/core/TextField'
+import ByAddress from './ByAddress'
+import ByPOI from './ByPOI'
 
-import Map from 'react-map-gl'
+import IconButton from '@material-ui/core/IconButton'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+
+import HomeIcon from '@material-ui/icons/Home'
+import MapIcon from '@material-ui/icons/Map'
+import SearchIcon from '@material-ui/icons/Search'
+
 import mapboxgl from 'mapbox-gl'
-
-import { getMap, ACCESS_TOKEN } from '../api'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
@@ -25,61 +29,115 @@ const useStyles = makeStyles(
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
+      minWidth: '100vw',
+      background:
+        'linear-gradient(32deg, rgba(78,67,255,1) 0%, rgba(128,128,255,1) 24%, rgba(0,212,255,1) 100%)',
     },
 
     locationContainer: {
       display: 'flex',
-      flex: 1,
       flexDirection: 'column',
-      minHeight: '100%',
+      minHeight: '80vh',
+      minWidth: '75vw',
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: theme.spacing(1),
+      backgroundColor: '#e1e0d6',
     },
 
     textField: {
-      minWidth: '80%',
+      minWidth: '60%',
+      fontFamily: 'Open Sans',
+      marginTop: theme.spacing(1),
+      backgroundColor: '#ffffff',
+      border: '2px solid #000000',
     },
 
-    newMapButton: {
-      width: '80%',
+    mapContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      minWidth: '75vw',
+      minHeight: '80vh',
+      backgroundColor: '#d6d6d6',
+    },
+
+    buttonContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      minWidth: '75vw',
+      minHeight: '80vh',
+    },
+
+    title: {
+      fontFamily: 'Open Sans',
+      fontWeight: 'bold',
+    },
+
+    logo: {
+      display: 'flex',
+      flex: 0,
+      height: '30vh',
+      width: '30vw',
+    },
+
+    //Buttons
+
+    pageButton: {
+      fontFamily: 'Open sans',
+      margin: theme.spacing(0.3),
+      color: '#000000',
+    },
+
+    buttonPaper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '60vw',
+    },
+
+    buttonIcon: {
+      width: 45,
+      height: 45,
+      marginLeft: theme.spacing(1),
+    },
+
+    buttonText: {
+      marginLeft: theme.spacing(1),
     },
   }),
   { name: 'Homepage' }
 )
 
+const PAGE_ACTIONS = {
+  SET_PAGE: 'set-page',
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case PAGE_ACTIONS.SET_PAGE:
+      return { ...state, ...action.payload }
+  }
+}
+
+const initialState = {
+  page: '',
+}
+const contentMapping = {
+  address: ByAddress,
+  poi: ByPOI,
+}
+
 const Homepage = props => {
   const classes = useStyles(props)
 
-  const [location, setLocation] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [query, setQuery] = useState('')
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-  useEffect(() => {
-    const getStuff = async () => {
-      const map = await getMap(query)
-      console.log(JSON.stringify(map, null, 2))
-      setLocation(map.features[0])
-      setLoading(false)
-    }
-    getStuff()
-  }, [])
-
-  const newMap = () => {
-    const getNewMap = async () => {
-      setLoading(true)
-      const map = await getMap(query)
-      setLocation(map.features[0])
-      setLoading(false)
-    }
-    getNewMap()
-  }
-
-  const handleFieldChange = event => {
-    const request = event.target.value
-    setQuery(request)
-  }
-
+  const Content = contentMapping[state.page]
   return (
     <div className={classes.root}>
       <HelmetProvider>
@@ -87,42 +145,43 @@ const Homepage = props => {
           <title>Mapbox | Homepage</title>
         </Helmet>
 
-        <TextField
-          variant="outlined"
-          className={classes.textField}
-          label="Address"
-          value={query}
-          onChange={handleFieldChange}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => newMap()}
-          className={classes.newMapButton}
-        >
-          New address
-        </Button>
-        <div>{location !== '' ? <p>You are here...</p> : <></>}</div>
-        <div>{location.place_name}</div>
-        <div>
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            <div className={classes.locationContainer}>
-              ({location.geometry.coordinates[0]}, {location.geometry.coordinates[1]})
-              <Map
-                initialViewState={{
-                  longitude: location.geometry.coordinates[0],
-                  latitude: location.geometry.coordinates[1],
-                  zoom: 14,
-                }}
-                style={{ width: '100%', height: 300 }}
-                mapStyle="mapbox://styles/mapbox/streets-v9"
-                mapboxAccessToken={ACCESS_TOKEN}
-              />
+        {Content ? (
+          <Content mapDispatch={dispatch} mapState={state} PAGE_ACTIONS={PAGE_ACTIONS} />
+        ) : (
+          <Paper square elevation={3} className={classes.locationContainer}>
+            <Typography variant="h2" className={classes.title}>
+              Mapbox-Demo
+            </Typography>
+            <MapIcon className={classes.logo} />
+            <div className={classes.buttonContainer}>
+              <IconButton
+                onClick={() =>
+                  dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
+                }
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Search by Address
+                  </Typography>
+                  <HomeIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+
+              <IconButton
+                onClick={() => dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'poi' } })}
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Search by Point of Interest
+                  </Typography>
+                  <SearchIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
             </div>
-          )}
-        </div>
+          </Paper>
+        )}
       </HelmetProvider>
     </div>
   )
