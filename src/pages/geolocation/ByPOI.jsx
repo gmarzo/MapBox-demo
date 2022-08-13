@@ -18,9 +18,9 @@ import RoomIcon from '@material-ui/icons/Room'
 import { Map, Marker, Popup } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
-import CATEGORIES from '../common/categories'
+import CATEGORIES from '../../common/categories'
 
-import { getMapByAddress, getMapByPOI, ACCESS_TOKEN } from '../api'
+import { getMapByAddress, getMapByPOI, ACCESS_TOKEN } from '../../api'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default

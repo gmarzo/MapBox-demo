@@ -17,7 +17,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import { Map, Marker } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
-import { getMapByAddress, ACCESS_TOKEN } from '../api'
+import { getMapByAddress, ACCESS_TOKEN } from '../../api'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default

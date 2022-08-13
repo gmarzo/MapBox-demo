@@ -4,8 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-import ByAddress from './ByAddress'
-import ByPOI from './ByPOI'
+import ByAddress from './geolocation/ByAddress'
+import ByPOI from './geolocation/ByPOI'
 
 import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
@@ -39,7 +39,7 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       minHeight: '80vh',
       minWidth: '75vw',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       marginTop: theme.spacing(1),
       backgroundColor: '#e1e0d6',
@@ -64,12 +64,15 @@ const useStyles = makeStyles(
 
     buttonContainer: {
       display: 'flex',
-      flex: 1,
+      flex: 0,
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      minWidth: '75vw',
-      minHeight: '80vh',
+      width: '90%',
+      height: '80%',
+      backgroundColor: '#f1e7d6',
+      border: '2px solid #000000',
+      marginBottom: '5%',
     },
 
     title: {
@@ -88,7 +91,6 @@ const useStyles = makeStyles(
 
     pageButton: {
       fontFamily: 'Open sans',
-      margin: theme.spacing(0.3),
       color: '#000000',
     },
 
@@ -153,7 +155,8 @@ const Homepage = props => {
               Mapbox-Demo
             </Typography>
             <MapIcon className={classes.logo} />
-            <div className={classes.buttonContainer}>
+            <Paper elevation={3} className={classes.buttonContainer}>
+              <Typography variant="h3">Geolocation</Typography>
               <IconButton
                 onClick={() =>
                   dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
@@ -179,7 +182,7 @@ const Homepage = props => {
                   <SearchIcon className={classes.buttonIcon} />
                 </Paper>
               </IconButton>
-            </div>
+            </Paper>
           </Paper>
         )}
       </HelmetProvider>
