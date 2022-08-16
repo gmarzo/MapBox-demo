@@ -4,9 +4,12 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
+//Pages
 import ByAddress from './geolocation/ByAddress'
 import ByPOI from './geolocation/ByPOI'
+import RasterTiles from './maps/RasterTiles'
 
+import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -132,6 +135,7 @@ const initialState = {
 const contentMapping = {
   address: ByAddress,
   poi: ByPOI,
+  'raster-tiles': RasterTiles,
 }
 
 const Homepage = props => {
@@ -183,6 +187,13 @@ const Homepage = props => {
                 </Paper>
               </IconButton>
             </Paper>
+            <Button
+              onClick={() =>
+                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
+              }
+            >
+              To vector tiles
+            </Button>
           </Paper>
         )}
       </HelmetProvider>
