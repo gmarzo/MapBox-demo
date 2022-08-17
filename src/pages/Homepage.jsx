@@ -192,7 +192,7 @@ const Homepage = props => {
                 dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
               }
             >
-              To vector tiles
+              To raster tiles
             </Button>
           </Paper>
         )}
