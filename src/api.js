@@ -33,4 +33,20 @@ const getRasterTile = async (zoom, x, y) => {
   return response.url
 }
 
-export { getMapByAddress, getMapByPOI, getRasterTile, ACCESS_TOKEN }
+//Navigation
+
+const getDirections = async (start, destination) => {
+  const startCoords = await getMapByAddress(start)
+  const journeyStart = startCoords.features[0].geometry.coordinates
+
+  const destinationCoords = await getMapByAddress(destination)
+  const journeyEnd = destinationCoords.features[0].geometry.coordinates
+
+  const response = await fetch(
+    `https://api.mapbox.com/directions/v5/mapbox/driving/${journeyStart[0]},${journeyStart[1]};${journeyEnd[0]},${journeyEnd[1]}?alternatives=true&steps=true&access_token=${ACCESS_TOKEN}`
+  )
+
+  return response.json()
+}
+
+export { getMapByAddress, getMapByPOI, getRasterTile, getDirections, ACCESS_TOKEN }

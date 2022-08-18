@@ -8,12 +8,15 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import ByAddress from './geolocation/ByAddress'
 import ByPOI from './geolocation/ByPOI'
 import RasterTiles from './maps/RasterTiles'
+import Directions from './navigation/Directions'
+import Route from './navigation/Route'
 
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 
+import ExploreIcon from '@material-ui/icons/Explore'
 import HomeIcon from '@material-ui/icons/Home'
 import MapIcon from '@material-ui/icons/Map'
 import SearchIcon from '@material-ui/icons/Search'
@@ -130,12 +133,25 @@ const reducer = (state, action) => {
 }
 
 const initialState = {
-  page: '',
+  page: 'home',
+  directions: { start: '', end: '', directions: [] },
 }
+
 const contentMapping = {
   address: ByAddress,
   poi: ByPOI,
   'raster-tiles': RasterTiles,
+  directions: Directions,
+  route: Route,
+}
+
+const helmetMapping = {
+  home: 'Homepage',
+  address: 'Search by Address',
+  poi: 'Search by Point of Interest',
+  'raster-tiles': 'Raster Tiles',
+  directions: 'Directions',
+  route: 'Route',
 }
 
 const Homepage = props => {
@@ -148,7 +164,7 @@ const Homepage = props => {
     <div className={classes.root}>
       <HelmetProvider>
         <Helmet>
-          <title>Mapbox | Homepage</title>
+          <title>Mapbox | {helmetMapping[state.page]}</title>
         </Helmet>
 
         {Content ? (
@@ -187,13 +203,34 @@ const Homepage = props => {
                 </Paper>
               </IconButton>
             </Paper>
-            <Button
+
+            <IconButton
               onClick={() =>
                 dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
               }
+              className={classes.pageButton}
             >
-              To raster tiles
-            </Button>
+              <Paper square className={classes.buttonPaper}>
+                <Typography variant="h5" className={classes.buttonText}>
+                  Raster Tiles
+                </Typography>
+                <MapIcon className={classes.buttonIcon} />
+              </Paper>
+            </IconButton>
+
+            <IconButton
+              onClick={() =>
+                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'directions' } })
+              }
+              className={classes.pageButton}
+            >
+              <Paper square className={classes.buttonPaper}>
+                <Typography variant="h5" className={classes.buttonText}>
+                  Directions
+                </Typography>
+                <ExploreIcon className={classes.buttonIcon} />
+              </Paper>
+            </IconButton>
           </Paper>
         )}
       </HelmetProvider>

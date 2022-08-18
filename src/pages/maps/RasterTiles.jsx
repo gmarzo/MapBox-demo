@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { getRasterTile } from '../../api'
 
+import clsx from 'clsx'
+
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
@@ -42,6 +44,7 @@ const useStyles = makeStyles(
 
     mapButton: {
       marginBottom: theme.spacing(1),
+      marginTop: theme.spacing(1),
     },
 
     mapContainer: {
@@ -58,6 +61,7 @@ const useStyles = makeStyles(
       width: '80%',
       height: '30px',
       backgroundColor: 'white',
+      fontFamily: 'Open sans',
       marginBottom: theme.spacing(0.5),
     },
 
@@ -68,6 +72,17 @@ const useStyles = makeStyles(
       justifyContent: 'flex-start',
       alignItems: 'center',
       width: '100%',
+    },
+
+    fieldTitleContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      minWidth: '80%',
+    },
+
+    topMargin: {
+      marginTop: theme.spacing(2),
     },
   }),
   { name: 'RasterTiles' }
@@ -83,8 +98,8 @@ const RasterTiles = props => {
   const [loading, setLoading] = useState(false)
 
   const [zoom, setZoom] = useState(0)
-  const [x, setX] = useState(null)
-  const [y, setY] = useState(null)
+  const [x, setX] = useState(0)
+  const [y, setY] = useState(0)
 
   const newTile = () => {
     const getTile = async () => {
@@ -97,7 +112,6 @@ const RasterTiles = props => {
   }
 
   const handleChange = event => {
-    //console.log('That was most unkind sir')
     switch (event.target.name) {
       case 'Zoom':
         setZoom(event.target.value)
@@ -117,7 +131,7 @@ const RasterTiles = props => {
 
   return (
     <div className={classes.root}>
-      <Paper elevation={3} className={classes.mapContainer}>
+      <Paper square elevation={3} className={classes.mapContainer}>
         <div className={classes.header}>
           <IconButton
             onClick={() => mapDispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'home' } })}
@@ -126,7 +140,9 @@ const RasterTiles = props => {
           </IconButton>
         </div>
 
-        <Typography>Zoom</Typography>
+        <div className={classes.fieldTitleContainer}>
+          <Typography variant="h5">Zoom Level</Typography>
+        </div>
         <NativeSelect
           name="Zoom"
           value={zoom}
@@ -140,7 +156,9 @@ const RasterTiles = props => {
           ))}
         </NativeSelect>
 
-        <Typography>X</Typography>
+        <div className={clsx(classes.fieldTitleContainer, classes.topMargin)}>
+          <Typography variant="h5">X</Typography>
+        </div>
         <NativeSelect name="X" value={x} onChange={e => handleChange(e)} className={classes.select}>
           {Array.from(Array(2 ** zoom).keys()).map(x => (
             <option key={x} value={x}>
@@ -149,7 +167,9 @@ const RasterTiles = props => {
           ))}
         </NativeSelect>
 
-        <Typography>Y</Typography>
+        <div className={clsx(classes.fieldTitleContainer, classes.topMargin)}>
+          <Typography variant="h5">Y</Typography>
+        </div>
         <NativeSelect name="Y" value={y} onChange={e => handleChange(e)} className={classes.select}>
           {Array.from(Array(2 ** zoom).keys()).map(y => (
             <option key={y} value={y}>
@@ -159,7 +179,7 @@ const RasterTiles = props => {
         </NativeSelect>
 
         <Button variant="contained" color="primary" onClick={newTile} className={classes.mapButton}>
-          Give mappy
+          Generate Tile
         </Button>
 
         {rasterTile && !loading ? (
