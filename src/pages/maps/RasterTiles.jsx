@@ -38,8 +38,8 @@ const useStyles = makeStyles(
     },
 
     tile: {
-      height: '300px',
-      width: '300px',
+      height: '250px',
+      width: '250px',
     },
 
     mapButton: {
@@ -182,11 +182,7 @@ const RasterTiles = props => {
           Generate Tile
         </Button>
 
-        {rasterTile && !loading ? (
-          <img src={rasterTile} className={classes.tile} />
-        ) : (
-          <CircularProgress />
-        )}
+        {rasterTile && !loading ? <img src={rasterTile} className={classes.tile} /> : <></>}
       </Paper>
     </div>
   )

@@ -5,12 +5,15 @@ import { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
+import clsx from 'clsx'
+
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
+import NativeSelect from '@material-ui/core/NativeSelect'
 import Paper from '@material-ui/core/Paper'
+import Slider from '@material-ui/core/Slider'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import NativeSelect from '@material-ui/core/NativeSelect'
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import RoomIcon from '@material-ui/icons/Room'
@@ -56,6 +59,15 @@ const useStyles = makeStyles(
       backgroundColor: '#e1e0d6',
     },
 
+    inputContainer: {
+      display: 'flex',
+      flex: 0,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      width: '100%',
+    },
+
     fieldContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -66,11 +78,11 @@ const useStyles = makeStyles(
 
     mapContainer: {
       display: 'flex',
+      flex: 1,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      minWidth: '100%',
-      minHeight: '60%',
+      width: '100%',
     },
 
     categorySelect: {
@@ -96,15 +108,30 @@ const useStyles = makeStyles(
       justifyContent: 'flex-start',
       fontFamily: 'Open Sans',
       color: '#000000',
-      paddingLeft: '5vw',
+      marginLeft: theme.spacing(3),
     },
 
     buttonContainer: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       minWidth: '100%',
+    },
+
+    searchSliderContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      width: '100%',
+    },
+
+    slider: {
+      display: 'flex',
+      width: '80%',
+      marginLeft: theme.spacing(5),
+      marginRight: theme.spacing(3),
     },
 
     searchButton: {
@@ -119,6 +146,10 @@ const useStyles = makeStyles(
 
     blackText: {
       color: 'black',
+    },
+
+    topMargin: {
+      marginTop: theme.spacing(2),
     },
   }),
   { name: 'ByPOI' }
@@ -136,12 +167,12 @@ const ByPOI = props => {
   const [addressCoords, setAddressCoords] = useState(null)
   const [popupPoint, setPopupPoint] = useState(null)
   const [popupOpen, setPopupOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [sliderValue, setSliderValue] = useState(1)
 
   const getPOIs = () => {
     const getPoints = async () => {
       setLoading(true)
-      const data = await getMapByPOI(searchCategory, address)
+      const data = await getMapByPOI(searchCategory, address, sliderValue)
       console.log('POIs: ', data.features)
       setPois(data.features)
       const coords = await getMapByAddress(address)
@@ -160,19 +191,15 @@ const ByPOI = props => {
       case 'Address':
         setAddress(event.target.value)
         break
+      case 'slider':
+        setSliderValue(event.target.value)
+        break
       default:
     }
   }
 
-  const selectMarker = event => {
-    console.log('Made it to function')
-    //setAnchorEl(event.target)
-    setPopupOpen(true)
-    //console.log(anchorEl)
-  }
-
-  const handleClose = () => {
-    setPopupOpen(false)
+  const sliderChange = (event, newValue) => {
+    setSliderValue(newValue)
   }
 
   return (
@@ -186,52 +213,71 @@ const ByPOI = props => {
           </IconButton>
         </div>
 
-        <Typography variant="h4" className={classes.entryTitle}>
-          Category
-        </Typography>
-        <div className={classes.fieldContainer}>
-          <NativeSelect
-            name="Category"
-            value={searchCategory}
-            className={classes.categorySelect}
-            onChange={handleChange}
-            inputProps={{ name: 'Category' }}
-          >
-            <option aria-label="---" value="" />
-            {CATEGORIES.map((category, index) => {
-              return (
-                <option key={index} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </option>
-              )
-            })}
-          </NativeSelect>
-        </div>
+        <div className={classes.inputContainer}>
+          <Typography variant="h4" className={classes.entryTitle}>
+            Search for...
+          </Typography>
 
-        <Typography variant="h4" className={classes.entryTitle}>
-          Address
-        </Typography>
-        <div className={classes.fieldContainer}>
-          <TextField
-            fullWidth
-            name="Address"
-            value={address}
-            variant="standard"
-            className={classes.addressInput}
-            onChange={handleChange}
-          />
-        </div>
+          <div className={classes.fieldContainer}>
+            <NativeSelect
+              name="Category"
+              value={searchCategory}
+              className={classes.categorySelect}
+              onChange={handleChange}
+              inputProps={{ name: 'Category' }}
+            >
+              <option aria-label="---" value="" />
+              {CATEGORIES.map((category, index) => {
+                return (
+                  <option key={index} value={category}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </option>
+                )
+              })}
+            </NativeSelect>
+          </div>
 
-        <div className={classes.buttonContainer}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => getPOIs()}
-            className={classes.searchButton}
-            disabled={!searchCategory || !address}
-          >
-            Search
-          </Button>
+          <Typography variant="h4" className={classes.entryTitle}>
+            Nearby to...
+          </Typography>
+          <div className={classes.fieldContainer}>
+            <TextField
+              fullWidth
+              name="Address"
+              placeholder="12345 Main St, City, State"
+              value={address}
+              variant="standard"
+              className={classes.addressInput}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className={classes.searchSliderContainer}>
+            <Typography variant="h4" className={clsx(classes.entryTitle, classes.topMargin)}>
+              Limit: {sliderValue}
+            </Typography>
+            <Slider
+              defaultValue={1}
+              name="slider"
+              value={sliderValue}
+              step={1}
+              min={1}
+              max={10}
+              className={classes.slider}
+              onChange={sliderChange}
+            />
+          </div>
+          <div className={classes.buttonContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => getPOIs()}
+              className={classes.searchButton}
+              disabled={!searchCategory || !address}
+            >
+              Search
+            </Button>
+          </div>
         </div>
 
         {loading ? (

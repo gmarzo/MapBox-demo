@@ -1,8 +1,6 @@
 // Mapbox API forward geocoding: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding
 // Mapbox API point of interest geocoding: https://docs.mapbox.com/api/search/geocoding/#point-of-interest-category-coverage
 
-import { useState } from 'react'
-
 import { makeStyles } from '@material-ui/core/styles'
 
 import Button from '@material-ui/core/Button'
@@ -69,7 +67,11 @@ const useStyles = makeStyles(
       width: '100%',
       backgroundColor: 'white',
       border: '1px solid black',
-      fontFamily: 'Open Sans',
+    },
+
+    instructionText: {
+      fontFamily: 'Open sans',
+      fontSize: 18,
     },
   }),
   { name: 'Route' }
@@ -103,7 +105,13 @@ const Route = props => {
           <List dense={true}>
             {INSTRUCTIONS.map((instruction, index) => (
               <ListItem key={index} className={classes.instruction}>
-                <ListItemText primary={`${index + 1}. ${instruction.maneuver.instruction}`} />
+                <ListItemText
+                  primary={
+                    <Typography className={classes.instructionText}>
+                      {index + 1}. {instruction.maneuver.instruction}
+                    </Typography>
+                  }
+                />
               </ListItem>
             ))}
           </List>

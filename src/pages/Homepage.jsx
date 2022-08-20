@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 
 import ExploreIcon from '@material-ui/icons/Explore'
+import GridOnIcon from '@material-ui/icons/GridOn'
 import HomeIcon from '@material-ui/icons/Home'
 import MapIcon from '@material-ui/icons/Map'
 import SearchIcon from '@material-ui/icons/Search'
@@ -72,10 +73,11 @@ const useStyles = makeStyles(
       display: 'flex',
       flex: 0,
       flexDirection: 'column',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
       width: '90%',
-      height: '80%',
+      height: undefined,
+      aspectRatio: 3 / 2,
       backgroundColor: '#f1e7d6',
       border: '2px solid #000000',
       marginBottom: '5%',
@@ -105,7 +107,7 @@ const useStyles = makeStyles(
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      minWidth: '60vw',
+      width: '270px',
     },
 
     buttonIcon: {
@@ -176,7 +178,7 @@ const Homepage = props => {
             </Typography>
             <MapIcon className={classes.logo} />
             <Paper elevation={3} className={classes.buttonContainer}>
-              <Typography variant="h3">Geolocation</Typography>
+              <Typography variant="h4">Geolocation</Typography>
               <IconButton
                 onClick={() =>
                   dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
@@ -214,7 +216,7 @@ const Homepage = props => {
                 <Typography variant="h5" className={classes.buttonText}>
                   Raster Tiles
                 </Typography>
-                <MapIcon className={classes.buttonIcon} />
+                <GridOnIcon className={classes.buttonIcon} />
               </Paper>
             </IconButton>
 

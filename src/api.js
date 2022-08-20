@@ -14,12 +14,12 @@ const getMapByAddress = async address => {
   return response.json()
 }
 
-const getMapByPOI = async (category, address) => {
+const getMapByPOI = async (category, address, limit) => {
   const locations = await getMapByAddress(address)
   const location = locations.features[0].geometry.coordinates
 
   const response = await fetch(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${category}.json?type=poi&proximity=${location}&access_token=${ACCESS_TOKEN}&limit=10`
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${category}.json?type=poi&proximity=${location}&access_token=${ACCESS_TOKEN}&limit=${limit}`
   )
   return response.json()
 }
