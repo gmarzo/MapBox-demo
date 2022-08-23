@@ -265,6 +265,10 @@ const ByPOI = props => {
               max={10}
               className={classes.slider}
               onChange={sliderChange}
+              marks={[
+                { value: 1, label: '1' },
+                { value: 10, label: '10' },
+              ]}
             />
           </div>
           <div className={classes.buttonContainer}>

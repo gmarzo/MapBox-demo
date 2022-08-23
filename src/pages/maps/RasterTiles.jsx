@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import NativeSelect from '@material-ui/core/NativeSelect'
+import Slider from '@material-ui/core/Slider'
 import Typography from '@material-ui/core/Typography'
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
@@ -38,8 +39,9 @@ const useStyles = makeStyles(
     },
 
     tile: {
-      height: '250px',
-      width: '250px',
+      height: undefined,
+      width: '70%',
+      aspectRatio: 1 / 1,
     },
 
     mapButton: {
@@ -54,7 +56,16 @@ const useStyles = makeStyles(
       justifyContent: 'flex-start',
       minWidth: '75vw',
       minHeight: '80vh',
+      maxWidth: '600px',
       backgroundColor: '#e1e0d6',
+    },
+
+    tileContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
 
     select: {
@@ -81,8 +92,17 @@ const useStyles = makeStyles(
       minWidth: '80%',
     },
 
+    fieldTitle: {
+      fontFamily: 'Open Sans',
+      fontSize: '1.5rem',
+    },
+
     topMargin: {
       marginTop: theme.spacing(2),
+    },
+
+    slider: {
+      width: '80%',
     },
   }),
   { name: 'RasterTiles' }
@@ -114,19 +134,27 @@ const RasterTiles = props => {
   const handleChange = event => {
     switch (event.target.name) {
       case 'Zoom':
-        setZoom(event.target.value)
+        setZoom(Number(event.target.value))
         setX(0)
         setY(0)
         break
       case 'X':
-        setX(event.target.value)
+        setX(Number(event.target.value))
         break
       case 'Y':
-        setY(event.target.value)
+        setY(Number(event.target.value))
         break
       default:
         break
     }
+  }
+
+  const xSliderChange = (event, newValue) => {
+    setX(newValue)
+  }
+
+  const ySliderChange = (event, newValue) => {
+    setY(newValue)
   }
 
   return (
@@ -141,7 +169,9 @@ const RasterTiles = props => {
         </div>
 
         <div className={classes.fieldTitleContainer}>
-          <Typography variant="h5">Zoom Level</Typography>
+          <Typography variant="h5" className={classes.fieldTitle}>
+            Zoom Level
+          </Typography>
         </div>
         <NativeSelect
           name="Zoom"
@@ -157,32 +187,62 @@ const RasterTiles = props => {
         </NativeSelect>
 
         <div className={clsx(classes.fieldTitleContainer, classes.topMargin)}>
-          <Typography variant="h5">X</Typography>
+          <Typography variant="h5" className={classes.fieldTitle}>
+            X: {x}
+          </Typography>
         </div>
-        <NativeSelect name="X" value={x} onChange={e => handleChange(e)} className={classes.select}>
-          {Array.from(Array(2 ** zoom).keys()).map(x => (
-            <option key={x} value={x}>
-              {x}
-            </option>
-          ))}
-        </NativeSelect>
+
+        <Slider
+          defaultValue={0}
+          name="xSlider"
+          value={x}
+          step={1}
+          min={0}
+          max={2 ** zoom - 1}
+          className={classes.slider}
+          onChange={xSliderChange}
+          marks={
+            zoom === 0
+              ? [{}]
+              : [
+                  { value: 0, label: '0' },
+                  { value: 2 ** zoom - 1, label: `${2 ** zoom - 1}` },
+                ]
+          }
+        />
 
         <div className={clsx(classes.fieldTitleContainer, classes.topMargin)}>
-          <Typography variant="h5">Y</Typography>
+          <Typography variant="h5" className={classes.fieldTitle}>
+            Y: {y}
+          </Typography>
         </div>
-        <NativeSelect name="Y" value={y} onChange={e => handleChange(e)} className={classes.select}>
-          {Array.from(Array(2 ** zoom).keys()).map(y => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </NativeSelect>
+
+        <Slider
+          defaultValue={0}
+          name="ySlider"
+          value={y}
+          step={1}
+          min={0}
+          max={2 ** zoom - 1}
+          className={classes.slider}
+          onChange={ySliderChange}
+          marks={
+            zoom === 0
+              ? [{}]
+              : [
+                  { value: 0, label: '0' },
+                  { value: 2 ** zoom - 1, label: `${2 ** zoom - 1}` },
+                ]
+          }
+        />
 
         <Button variant="contained" color="primary" onClick={newTile} className={classes.mapButton}>
           Generate Tile
         </Button>
 
-        {rasterTile && !loading ? <img src={rasterTile} className={classes.tile} /> : <></>}
+        <div className={classes.tileContainer}>
+          {rasterTile && !loading ? <img src={rasterTile} className={classes.tile} /> : <></>}
+        </div>
       </Paper>
     </div>
   )

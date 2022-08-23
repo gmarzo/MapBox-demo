@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 
+import clsx from 'clsx'
+
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
@@ -68,6 +70,11 @@ const useStyles = makeStyles(
       flex: 1,
       justifyContent: 'center',
       minWidth: '100%',
+    },
+
+    fieldText: {
+      fontFamily: 'Open Sans',
+      fontSize: '1.5rem',
     },
 
     textField: {
@@ -162,14 +169,16 @@ const Directions = props => {
           </IconButton>
         </div>
         <div className={classes.searchContainer}>
-          <Typography variant="h5">Start</Typography>
+          <Typography variant="h5" className={classes.fieldText}>
+            Start
+          </Typography>
           <TextField
             name="start"
             value={start}
             onChange={e => handleChange(e)}
             className={classes.textField}
           />
-          <Typography variant="h5" className={classes.topMargin}>
+          <Typography variant="h5" className={clsx(classes.fieldText, classes.topMargin)}>
             Destination
           </Typography>
           <TextField

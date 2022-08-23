@@ -71,21 +71,25 @@ const useStyles = makeStyles(
 
     buttonContainer: {
       display: 'flex',
-      flex: 0,
+      flex: 1,
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
-      width: '90%',
+      width: '60%',
       height: undefined,
       aspectRatio: 3 / 2,
       backgroundColor: '#f1e7d6',
       border: '2px solid #000000',
-      marginBottom: '5%',
+      marginBottom: '2%',
     },
 
     title: {
       fontFamily: 'Open Sans',
       fontWeight: 'bold',
+    },
+
+    boxTitle: {
+      fontFamily: 'Open Sans',
     },
 
     logo: {
@@ -100,6 +104,10 @@ const useStyles = makeStyles(
     pageButton: {
       fontFamily: 'Open sans',
       color: '#000000',
+      width: '90%',
+      borderRadius: '0px',
+      padding: '0px',
+      marginBottom: '12px',
     },
 
     buttonPaper: {
@@ -107,7 +115,7 @@ const useStyles = makeStyles(
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      width: '270px',
+      width: '100%',
     },
 
     buttonIcon: {
@@ -117,6 +125,8 @@ const useStyles = makeStyles(
     },
 
     buttonText: {
+      fontFamily: 'Open Sans',
+      fontSize: '1.5rem',
       marginLeft: theme.spacing(1),
     },
   }),
@@ -177,8 +187,11 @@ const Homepage = props => {
               Mapbox-Demo
             </Typography>
             <MapIcon className={classes.logo} />
+
             <Paper elevation={3} className={classes.buttonContainer}>
-              <Typography variant="h4">Geolocation</Typography>
+              <Typography variant="h4" className={classes.boxTitle}>
+                Geocoding
+              </Typography>
               <IconButton
                 onClick={() =>
                   dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'address' } })
@@ -206,33 +219,43 @@ const Homepage = props => {
               </IconButton>
             </Paper>
 
-            <IconButton
-              onClick={() =>
-                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
-              }
-              className={classes.pageButton}
-            >
-              <Paper square className={classes.buttonPaper}>
-                <Typography variant="h5" className={classes.buttonText}>
-                  Raster Tiles
-                </Typography>
-                <GridOnIcon className={classes.buttonIcon} />
-              </Paper>
-            </IconButton>
+            <Paper elevation={3} className={classes.buttonContainer}>
+              <Typography variant="h4" className={classes.boxTitle}>
+                Tiles
+              </Typography>
+              <IconButton
+                onClick={() =>
+                  dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
+                }
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Raster Tiles
+                  </Typography>
+                  <GridOnIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+            </Paper>
 
-            <IconButton
-              onClick={() =>
-                dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'directions' } })
-              }
-              className={classes.pageButton}
-            >
-              <Paper square className={classes.buttonPaper}>
-                <Typography variant="h5" className={classes.buttonText}>
-                  Directions
-                </Typography>
-                <ExploreIcon className={classes.buttonIcon} />
-              </Paper>
-            </IconButton>
+            <Paper elevation={3} className={classes.buttonContainer}>
+              <Typography variant="h4" className={classes.boxTitle}>
+                Navigation
+              </Typography>
+              <IconButton
+                onClick={() =>
+                  dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'directions' } })
+                }
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Directions
+                  </Typography>
+                  <ExploreIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+            </Paper>
           </Paper>
         )}
       </HelmetProvider>
