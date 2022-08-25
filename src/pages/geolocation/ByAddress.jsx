@@ -41,8 +41,8 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '80vh',
-      width: '80vw',
+      height: '800px',
+      width: '420px',
       backgroundColor: '#e1e0d6',
     },
 
@@ -50,8 +50,8 @@ const useStyles = makeStyles(
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
-      height: '80vh',
-      width: '80vw',
+      height: '100%',
+      width: '80%',
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
@@ -199,9 +199,9 @@ const ByAddress = props => {
                       display: 'flex',
                       flexDirection: 'row',
                       height: '100%',
-                      width: '75%',
-                      marginTop: '30px',
-                      marginBottom: '30px',
+                      width: '100%',
+                      marginTop: '2%',
+                      marginBottom: '2%',
                     }}
                     mapStyle="mapbox://styles/mapbox/streets-v9"
                     mapboxAccessToken={ACCESS_TOKEN}

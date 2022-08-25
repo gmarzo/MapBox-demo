@@ -1,6 +1,8 @@
 // Mapbox API forward geocoding: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding
 // Mapbox API point of interest geocoding: https://docs.mapbox.com/api/search/geocoding/#point-of-interest-category-coverage
 
+import { useEffect, useState } from 'react'
+
 import { makeStyles } from '@material-ui/core/styles'
 
 import Button from '@material-ui/core/Button'
@@ -17,7 +19,13 @@ import Typography from '@material-ui/core/Typography'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import BackArrowIcon from '@material-ui/icons/ArrowBack'
 
-import { getDirections } from '../../api'
+import { getMapByAddress } from '../../api'
+
+import { Map, Marker, Popup } from 'react-map-gl'
+import mapboxgl from 'mapbox-gl'
+
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default
 
 const useStyles = makeStyles(
   theme => ({
@@ -46,24 +54,45 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      minWidth: '75vw',
-      minHeight: '80vh',
+      height: '800px',
+      width: '420px',
       backgroundColor: '#e1e0d6',
+    },
+
+    mapContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '90%',
+      border: '1px solid black',
     },
 
     listContainer: {
       display: 'flex',
+      flex: 1,
       maxWidth: '80%',
+      height: '40%',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
+      marginBottom: theme.spacing(2),
+    },
+
+    list: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      overflowY: 'scroll',
     },
 
     instruction: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       justifyContent: 'flex-start',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       width: '100%',
       backgroundColor: 'white',
       border: '1px solid black',
@@ -84,6 +113,9 @@ const Route = props => {
 
   const INSTRUCTIONS = mapState.directions.directions[0].steps
 
+  const [start, setStart] = useState(null)
+  const [destination, setDestination] = useState(null)
+
   return (
     <div className={classes.root}>
       <Paper square elevation={3} className={classes.mainContainer}>
@@ -97,12 +129,17 @@ const Route = props => {
           </IconButton>
         </div>
 
-        <Button onClick={() => console.log(mapState.directions.directions)}>
-          directions to console
-        </Button>
+        <div className={classes.mapContainer}>
+          {/* <Map
+            initialViewState={{
+              longitude: mapState.directions.start.center[0],
+              latitude: mapState.directions.start.center[1],
+            }}
+          ></Map> */}
+        </div>
 
         <div className={classes.listContainer}>
-          <List dense={true}>
+          <List dense={true} className={classes.list}>
             {INSTRUCTIONS.map((instruction, index) => (
               <ListItem key={index} className={classes.instruction}>
                 <ListItemText

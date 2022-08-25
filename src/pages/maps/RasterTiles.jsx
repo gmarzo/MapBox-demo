@@ -54,9 +54,8 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      minWidth: '75vw',
-      minHeight: '80vh',
-      maxWidth: '600px',
+      height: '800px',
+      width: '420px',
       backgroundColor: '#e1e0d6',
     },
 
@@ -209,6 +208,7 @@ const RasterTiles = props => {
                   { value: 2 ** zoom - 1, label: `${2 ** zoom - 1}` },
                 ]
           }
+          disabled={zoom === 0}
         />
 
         <div className={clsx(classes.fieldTitleContainer, classes.topMargin)}>
@@ -234,6 +234,7 @@ const RasterTiles = props => {
                   { value: 2 ** zoom - 1, label: `${2 ** zoom - 1}` },
                 ]
           }
+          disabled={zoom === 0}
         />
 
         <Button variant="contained" color="primary" onClick={newTile} className={classes.mapButton}>

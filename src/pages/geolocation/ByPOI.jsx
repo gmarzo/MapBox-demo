@@ -13,9 +13,11 @@ import NativeSelect from '@material-ui/core/NativeSelect'
 import Paper from '@material-ui/core/Paper'
 import Slider from '@material-ui/core/Slider'
 import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import DriveEtaIcon from '@material-ui/icons/DriveEta'
 import RoomIcon from '@material-ui/icons/Room'
 
 import { Map, Marker, Popup } from 'react-map-gl'
@@ -54,8 +56,8 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
-      width: '80vw',
-      height: '80vh',
+      height: '800px',
+      width: '420px',
       backgroundColor: '#e1e0d6',
     },
 
@@ -90,7 +92,7 @@ const useStyles = makeStyles(
       border: '2px solid #000000',
       justifyContent: 'center',
       alignItems: 'center',
-      minWidth: '70vw',
+      minWidth: '85%',
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
@@ -100,7 +102,7 @@ const useStyles = makeStyles(
       border: '2px solid #000000',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      width: '70vw',
+      width: '85%',
     },
 
     entryTitle: {
@@ -108,7 +110,7 @@ const useStyles = makeStyles(
       justifyContent: 'flex-start',
       fontFamily: 'Open Sans',
       color: '#000000',
-      marginLeft: theme.spacing(3),
+      marginLeft: theme.spacing(3.5),
     },
 
     buttonContainer: {
@@ -204,7 +206,7 @@ const ByPOI = props => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.searchContainer}>
+      <Paper square elevation={3} className={classes.searchContainer}>
         <div className={classes.header}>
           <IconButton
             onClick={() => mapDispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'home' } })}
@@ -331,6 +333,24 @@ const ByPOI = props => {
                       >
                         <Typography>{popupPoint.text}</Typography>
                         <Typography>{popupPoint.properties.address}</Typography>
+                        <Tooltip title="Directions to here">
+                          <IconButton
+                            onClick={() =>
+                              mapDispatch({
+                                type: PAGE_ACTIONS.SET_PAGE,
+                                payload: {
+                                  page: 'directions',
+                                  directions: {
+                                    start: `${addressCoords[0].place_name}`,
+                                    end: `${popupPoint.place_name}`,
+                                  },
+                                },
+                              })
+                            }
+                          >
+                            <DriveEtaIcon />
+                          </IconButton>
+                        </Tooltip>
                       </Popup>
                     )}
                   </div>

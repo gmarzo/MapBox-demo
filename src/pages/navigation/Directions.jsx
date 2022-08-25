@@ -51,8 +51,8 @@ const useStyles = makeStyles(
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      minWidth: '75vw',
-      minHeight: '80vh',
+      height: '800px',
+      width: '420px',
       backgroundColor: '#e1e0d6',
     },
 
@@ -70,6 +70,14 @@ const useStyles = makeStyles(
       flex: 1,
       justifyContent: 'center',
       minWidth: '100%',
+    },
+
+    list: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: '80%',
     },
 
     fieldText: {
@@ -94,7 +102,7 @@ const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      minWidth: '60vw',
+      minWidth: '100%',
       backgroundColor: 'white',
       border: '1px solid #000000',
     },
@@ -114,7 +122,7 @@ const Directions = props => {
   const { mapDispatch, mapState, PAGE_ACTIONS } = props
 
   const [start, setStart] = useState(mapState.directions.start)
-  const [destination, setDestination] = useState(mapState.directions.destination)
+  const [destination, setDestination] = useState(mapState.directions.end)
   const [routes, setRoutes] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -161,7 +169,7 @@ const Directions = props => {
             onClick={() =>
               mapDispatch({
                 type: PAGE_ACTIONS.SET_PAGE,
-                payload: { page: 'home', start: '', destination: '', directions: [] },
+                payload: { page: 'home', directions: { start: '', end: '', directions: [] } },
               })
             }
           >
@@ -196,14 +204,14 @@ const Directions = props => {
           className={classes.searchButton}
           disabled={!start || !destination}
         >
-          Search button
+          Find Routes
         </Button>
 
         <div className={classes.routeContainer}>
           {routes && loading ? (
             <CircularProgress />
           ) : (
-            <List>
+            <List className={classes.list}>
               {routes.map((route, index) => {
                 return (
                   <ListItem
@@ -217,7 +225,7 @@ const Directions = props => {
                           page: 'route',
                           directions: {
                             start: `${start}`,
-                            destination: `${destination}`,
+                            end: `${destination}`,
                             directions: route.legs,
                           },
                         },

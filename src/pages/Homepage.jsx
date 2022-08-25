@@ -44,11 +44,10 @@ const useStyles = makeStyles(
     locationContainer: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '80vh',
-      minWidth: '75vw',
+      height: '800px',
+      width: '420px',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      marginTop: theme.spacing(1),
       backgroundColor: '#e1e0d6',
     },
 
