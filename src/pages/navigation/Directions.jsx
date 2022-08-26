@@ -238,7 +238,7 @@ const Directions = props => {
                           <Typography variant="h5">{Math.ceil(route.duration / 60)} min</Typography>
                         ) : (
                           <Typography variant="h5">
-                            {Math.floor(route.duration / 360)} hr {Math.ceil(route.duration / 60)}{' '}
+                            {Math.floor(route.duration / 3600)} hr {Math.ceil(route.duration % 60)}{' '}
                             min
                           </Typography>
                         )

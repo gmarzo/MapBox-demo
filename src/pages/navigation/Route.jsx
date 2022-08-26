@@ -6,22 +6,21 @@ import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 
 import Paper from '@material-ui/core/Paper'
-import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import BackArrowIcon from '@material-ui/icons/ArrowBack'
+import RoomIcon from '@material-ui/icons/Room'
 
-import { getMapByAddress } from '../../api'
+import { ACCESS_TOKEN, getMapByAddress } from '../../api'
 
-import { Map, Marker, Popup } from 'react-map-gl'
+import { Map, Marker, Source, Layer } from 'react-map-gl'
 import mapboxgl from 'mapbox-gl'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -78,6 +77,7 @@ const useStyles = makeStyles(
       justifyContent: 'flex-start',
       alignItems: 'center',
       marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(2),
     },
 
     list: {
@@ -102,6 +102,12 @@ const useStyles = makeStyles(
       fontFamily: 'Open sans',
       fontSize: 18,
     },
+
+    marker: {
+      fill: 'red',
+      height: 35,
+      width: 35,
+    },
   }),
   { name: 'Route' }
 )
@@ -113,8 +119,40 @@ const Route = props => {
 
   const INSTRUCTIONS = mapState.directions.directions[0].steps
 
-  const [start, setStart] = useState(null)
-  const [destination, setDestination] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [startCoords, setStartCoords] = useState(null)
+  const [destinationCoords, setDestinationCoords] = useState(null)
+  const [checkpoints, setCheckpoints] = useState([])
+
+  useEffect(() => {
+    const getStartEnd = async () => {
+      setLoading(true)
+      const start = await getMapByAddress(mapState.directions.start)
+      setStartCoords(start.features[0].center)
+      const destination = await getMapByAddress(mapState.directions.end)
+      setDestinationCoords(destination.features[0].center)
+      setLoading(false)
+    }
+
+    const getCheckpoints = () => {
+      const checkpoints = mapState.directions.directions[0].steps.map(leg => {
+        return leg.intersections[0].location
+      })
+      setCheckpoints(checkpoints)
+    }
+
+    getStartEnd()
+    getCheckpoints()
+  }, [])
+
+  const routeData = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: checkpoints,
+    },
+  }
 
   return (
     <div className={classes.root}>
@@ -127,15 +165,52 @@ const Route = props => {
           >
             <BackArrowIcon />
           </IconButton>
+
+          {/* <Button onClick={() => console.log(checkpoints)}>nut</Button> */}
         </div>
 
         <div className={classes.mapContainer}>
-          {/* <Map
-            initialViewState={{
-              longitude: mapState.directions.start.center[0],
-              latitude: mapState.directions.start.center[1],
-            }}
-          ></Map> */}
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Map
+              initialViewState={{
+                longitude: startCoords[0],
+                latitude: startCoords[1],
+                zoom: 12,
+              }}
+              mapStyle="mapbox://styles/mapbox/streets-v9"
+              mapboxAccessToken={ACCESS_TOKEN}
+            >
+              <Marker longitude={startCoords[0]} latitude={startCoords[1]}>
+                <RoomIcon className={classes.marker} />
+              </Marker>
+
+              {/* 
+                Using layer, source, and the routeData: https://stackoverflow.com/questions/67842338/how-to-use-react-map-gl-to-draw-line-between-two-point
+              */}
+
+              <Source id="polylineLayer" type="geojson" data={routeData}>
+                <Layer
+                  id="polylineLayer"
+                  type="line"
+                  source="my-data"
+                  layout={{
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                  }}
+                  paint={{
+                    'line-color': '#007cbf',
+                    'line-width': 4,
+                  }}
+                />
+              </Source>
+
+              <Marker longitude={destinationCoords[0]} latitude={destinationCoords[1]}>
+                <RoomIcon className={classes.marker} />
+              </Marker>
+            </Map>
+          )}
         </div>
 
         <div className={classes.listContainer}>
