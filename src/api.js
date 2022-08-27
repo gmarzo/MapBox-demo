@@ -24,11 +24,18 @@ const getMapByPOI = async (category, address, limit) => {
   return response.json()
 }
 
-//Raster Tile
+//Tiles
 
 const getRasterTile = async (zoom, x, y) => {
   const response = await fetch(
     `https://api.mapbox.com/v4/mapbox.satellite/${zoom}/${x}/${y}@2x.jpg90?access_token=${ACCESS_TOKEN}`
+  )
+  return response.url
+}
+
+const getVectorTile = async (zoom, x, y) => {
+  const response = await fetch(
+    `https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/${zoom}/${x}/${y}.mvt?access_token=${ACCESS_TOKEN}`
   )
   return response.url
 }
@@ -43,10 +50,10 @@ const getDirections = async (start, destination) => {
   const journeyEnd = destinationCoords.features[0].geometry.coordinates
 
   const response = await fetch(
-    `https://api.mapbox.com/directions/v5/mapbox/driving/${journeyStart[0]},${journeyStart[1]};${journeyEnd[0]},${journeyEnd[1]}?alternatives=true&steps=true&access_token=${ACCESS_TOKEN}`
+    `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${journeyStart[0]},${journeyStart[1]};${journeyEnd[0]},${journeyEnd[1]}?alternatives=true&steps=true&access_token=${ACCESS_TOKEN}`
   )
 
   return response.json()
 }
 
-export { getMapByAddress, getMapByPOI, getRasterTile, getDirections, ACCESS_TOKEN }
+export { getMapByAddress, getMapByPOI, getRasterTile, getVectorTile, getDirections, ACCESS_TOKEN }

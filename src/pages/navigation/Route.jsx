@@ -71,7 +71,7 @@ const useStyles = makeStyles(
     listContainer: {
       display: 'flex',
       flex: 1,
-      maxWidth: '80%',
+      maxWidth: '90%',
       height: '40%',
       flexDirection: 'column',
       justifyContent: 'flex-start',

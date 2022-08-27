@@ -10,6 +10,7 @@ import ByPOI from './geolocation/ByPOI'
 import RasterTiles from './maps/RasterTiles'
 import Directions from './navigation/Directions'
 import Route from './navigation/Route'
+import VectorTiles from './maps/VectorTiles'
 
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
@@ -154,6 +155,7 @@ const contentMapping = {
   'raster-tiles': RasterTiles,
   directions: Directions,
   route: Route,
+  'vector-tiles': VectorTiles,
 }
 
 const helmetMapping = {
@@ -163,6 +165,7 @@ const helmetMapping = {
   'raster-tiles': 'Raster Tiles',
   directions: 'Directions',
   route: 'Route',
+  'vector-tiles': 'Vector Tiles',
 }
 
 const Homepage = props => {
@@ -222,6 +225,7 @@ const Homepage = props => {
               <Typography variant="h4" className={classes.boxTitle}>
                 Tiles
               </Typography>
+
               <IconButton
                 onClick={() =>
                   dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'raster-tiles' } })
@@ -231,6 +235,20 @@ const Homepage = props => {
                 <Paper square className={classes.buttonPaper}>
                   <Typography variant="h5" className={classes.buttonText}>
                     Raster Tiles
+                  </Typography>
+                  <GridOnIcon className={classes.buttonIcon} />
+                </Paper>
+              </IconButton>
+
+              <IconButton
+                onClick={() =>
+                  dispatch({ type: PAGE_ACTIONS.SET_PAGE, payload: { page: 'vector-tiles' } })
+                }
+                className={classes.pageButton}
+              >
+                <Paper square className={classes.buttonPaper}>
+                  <Typography variant="h5" className={classes.buttonText}>
+                    Vector Tiles
                   </Typography>
                   <GridOnIcon className={classes.buttonIcon} />
                 </Paper>
